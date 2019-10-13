@@ -1,0 +1,5 @@
+## Interface: 30300
+## Title: MLAutoLootBoE
+## Dependencies: LibItemID, LibTableContains, LibBindType
+## SavedVariables: MLAutoLootBoE_looters
+MLAutoLootBoE.lua

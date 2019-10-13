@@ -1,5 +1,4 @@
 # MLAutoLootBoE
- Master Loot Auto Looter
  Requires: LibItemID, LibTableContains, LibBindType
  
  1. Auto-loot BoE.

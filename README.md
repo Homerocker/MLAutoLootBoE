@@ -15,6 +15,6 @@
  4. Auto-award Fragments of Val'anyr.
    - Type /ml valanyr <name> to automatically award Fragments of Val'anyr to specified raid member when opening loot window.
  5. Auto-award Shadowfrost Shards.
-   - Type /ml sm <name> to automatically award Shadowfrost Shards to specified raid member when opening loot window.
+   - Type /ml sm \<name\> to automatically award Shadowfrost Shards to specified raid member when opening loot window.
  6. Reset looters.
    - Type /ml reset to reset all shards/fragments looters and disenchanter.

@@ -183,6 +183,8 @@ f:SetScript("OnEvent", function(self, event, arg1)
         elseif looter ~= nil then
           MasterLootAward(i, looter)
         end
+      elseif LootSlotIsCoin(i) then
+        LootSlot(i)
       end
     end
   elseif event == "ADDON_LOADED" and arg1 == "MLAutoLootBoE" then

@@ -3,6 +3,7 @@
  
  1. Auto-loot BoE.
    - Automatically loots epic BoE items, epic recipes, TOC/Ulduar orbs, primordial saronites, quest items when opening loot.
+   - Automatically loots coins.
    - Does not loot Shadowfrost Shards and Fragments of Val'anyr.
  2. Auto-loot everything.
    - Hold CTRL while opening loot window to automatically pick up all remaining loot (e.g. if you want rolls to be done later).

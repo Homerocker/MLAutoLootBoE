@@ -2,6 +2,14 @@ local BOE_IDs = {
   47556,--Crusader Orb
   49908,--Primordial Saronite
   45087,--Runed Orb
+  43297,--Damaged Necklace
+}
+local exceptions = {
+  45693,--Mimiron's Head
+  50818,--Invincible's Reins
+  46110,--Alchemist's Cache
+  50226,--Festergut's Acidic Blood
+  50231,--Rotface's Acidic Blood
 }
 MLAutoLootBoE = {}
 MLAutoLootBoE_SAVED_VARS = {}
@@ -9,6 +17,7 @@ MLAutoLootBoE_SAVED_VARS.looters = {}
 MLAutoLootBoE_SAVED_VARS.screenshots = {}
 local itemLinks = {sm = select(2, GetItemInfo(50274)), valanyr = select(2, GetItemInfo(45038))}
 local isEnchanter = select(1, IsUsableSpell(select(1, GetSpellInfo(51313)))) and true or false
+local Recipe_Localized = select(10, GetAuctionItemClasses())
 local f = CreateFrame("Frame")
 
 f:RegisterEvent("LOOT_OPENED")
@@ -29,6 +38,53 @@ local function MasterLootAward(LootSlot, PlayerName)
     end
   end
   return false
+end
+
+local function itemShouldBeLooted(itemID, itemRarity, itemType, bindType)
+  -- exception
+  if table.contains(exceptions, itemID) then
+    return false
+  end
+  -- personal quest items
+  if bindType == "quest" then
+    return true
+  end
+  -- epic BoE items
+  if itemRarity == 4 and (bindType == "equip" or bindType == "use") then
+    return true
+  end
+  -- epic non-BoP recipes
+  if itemRarity == 4 and itemType == Recipe_Localized and bindType == nil then
+    return true
+  end
+  -- additional items
+  if table.contains(BOE_IDs, itemID) then
+    return true
+  end
+  -- autolooting everything but legendary items if CTRL key is down
+  if IsControlKeyDown() and not IsAltKeyDown() and itemRarity < 5 then
+    return true
+  end
+  return false
+end
+
+local function itemShouldBeDisenchanted(itemID, itemRarity, itemType, bindType)
+  if table.contains(BOE_IDs, itemID) or table.contains(exceptions, itemID) then
+    return false
+  end
+  if itemType == Recipe_Localized and bindType ~= nil then
+    return false
+  end
+  if itemLevel == 0 then
+    return false
+  end
+  if itemRarity < 2 or itemRarity > 4 then
+    return false
+  end
+  if itemRarity == 4 and not (IsControlKeyDown() and IsAltKeyDown()) then
+    return false
+  end
+  return true
 end
 
 function MLAutoLootBoE:notify(lootType)
@@ -110,21 +166,13 @@ f:SetScript("OnEvent", function(self, event, arg1)
       -- checking if link is nil (e.g. when item has been already looted, possible fix for emblems which are always autolooted)
       if link ~= nil then
         local _, itemLink, itemRarity, itemLevel, _, itemType = GetItemInfo(link)
-      local bindType = GetBindType(itemLink)
-      local itemID = GetItemID(itemLink)
-      local looter = nil
-      --quest items
-      if bindType == "quest"
-          -- epic BoEs, including recipes
-        or (itemRarity == 4 and ((bindType == "equip" or bindType == "use")
-        or (itemType == "Recipe" and bindType == nil)))
-        -- additional items
-        or table.contains(BOE_IDs, itemID)
-        -- autolooting everything but shadowfrost shards if CTRL key is down
-        or (IsControlKeyDown() and not IsAltKeyDown() and itemID ~= 50274 and itemID ~= 45038) then
+        local bindType = GetBindType(itemLink)
+        local itemID = GetItemID(itemLink)
+        local looter = nil
+        if itemShouldBeLooted(itemID, itemRarity, itemType, bindType) then
           looter = UnitName("player")
-        elseif (itemRarity == 2 or itemRarity == 3 or (itemRarity == 4 and IsControlKeyDown() and IsAltKeyDown())) and itemLevel > 0 and MLAutoLootBoE_SAVED_VARS.looters["de"] ~= nil then
-          looter = MLAutoLootBoE_SAVED_VARS.looters["de"]
+        elseif itemShouldBeDisenchanted(itemID, itemRarity, itemType, bindType) and MLAutoLootBoE_SAVED_VARS.looters["de"] ~= nil then
+            looter = MLAutoLootBoE_SAVED_VARS.looters["de"]
         elseif itemID == 50274 and MLAutoLootBoE_SAVED_VARS.looters["sm"] ~= nil then
           looter = MLAutoLootBoE_SAVED_VARS.looters["sm"]
         elseif itemID == 45038 and MLAutoLootBoE_SAVED_VARS.looters["valanyr"] ~= nil then

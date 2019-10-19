@@ -17,7 +17,7 @@ MLAutoLootBoE_SAVED_VARS.looters = {}
 MLAutoLootBoE_SAVED_VARS.screenshots = {}
 local itemLinks = {sm = select(2, GetItemInfo(50274)), valanyr = select(2, GetItemInfo(45038))}
 local isEnchanter = select(1, IsUsableSpell(select(1, GetSpellInfo(51313)))) and true or false
-local Recipe_Localized = select(10, GetAuctionItemClasses())
+local Recipe_Localized = select(9, GetAuctionItemClasses())
 local f = CreateFrame("Frame")
 
 f:RegisterEvent("LOOT_OPENED")

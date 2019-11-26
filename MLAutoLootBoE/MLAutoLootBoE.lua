@@ -153,38 +153,37 @@ f:SetScript("OnEvent", function(self, event, arg1)
       MLAutoLootBoE_SAVED_VARS.screenshots[UnitName("target")] = time()
     end
     
-    -- checking if master looting enabled and current player is master looter
-    -- or loot is set to "free for all"
-    if (lootmethod ~= "master" or masterlooterPartyID ~= 0)
-      and lootmethod ~= "freeforall"
-      and (lootmethod ~= "group" or GetNumPartyMembers() ~= 0 or GetNumRaidMembers() ~= 0) then
-      return
-    end
-    
     for i = 1, GetNumLootItems() do
-      local link = GetLootSlotLink(i)
-      -- checking if link is nil (e.g. when item has been already looted, possible fix for emblems which are always autolooted)
-      if link ~= nil then
-        local _, itemLink, itemRarity, itemLevel, _, itemType = GetItemInfo(link)
-        local bindType = GetBindType(itemLink)
-        local itemID = GetItemID(itemLink)
-        local looter = nil
-        if itemShouldBeLooted(itemID, itemRarity, itemType, bindType) then
-          looter = UnitName("player")
-        elseif itemShouldBeDisenchanted(itemID, itemRarity, itemType, bindType) and MLAutoLootBoE_SAVED_VARS.looters["de"] ~= nil then
-            looter = MLAutoLootBoE_SAVED_VARS.looters["de"]
-        elseif itemID == 50274 and MLAutoLootBoE_SAVED_VARS.looters["sm"] ~= nil then
-          looter = MLAutoLootBoE_SAVED_VARS.looters["sm"]
-        elseif itemID == 45038 and MLAutoLootBoE_SAVED_VARS.looters["valanyr"] ~= nil then
-          looter = MLAutoLootBoE_SAVED_VARS.looters["valanyr"]
-        end
-        if lootmethod ~= "master" and looter == UnitName("player") then
-          LootSlot(i)
-        elseif looter ~= nil then
-          MasterLootAward(i, looter)
-        end
-      elseif LootSlotIsCoin(i) then
+      if LootSlotIsCoin(i) then
         LootSlot(i)
+        -- checking if master looting enabled and current player is master looter
+        -- or loot is set to "free for all"
+        -- or player is not in party or raid
+      elseif (lootmethod == "master" and masterlooterPartyID == 0)
+              or lootmethod == "freeforall"
+              or (lootmethod == "group" and GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0) then
+        local link = GetLootSlotLink(i)
+        -- checking if link is nil (e.g. when item has been already looted, possible fix for emblems which are always autolooted)
+        if link ~= nil then
+          local _, itemLink, itemRarity, itemLevel, _, itemType = GetItemInfo(link)
+          local bindType = GetBindType(itemLink)
+          local itemID = GetItemID(itemLink)
+          local looter = nil
+          if itemShouldBeLooted(itemID, itemRarity, itemType, bindType) then
+            looter = UnitName("player")
+          elseif itemShouldBeDisenchanted(itemID, itemRarity, itemType, bindType) and MLAutoLootBoE_SAVED_VARS.looters["de"] ~= nil then
+              looter = MLAutoLootBoE_SAVED_VARS.looters["de"]
+          elseif itemID == 50274 and MLAutoLootBoE_SAVED_VARS.looters["sm"] ~= nil then
+            looter = MLAutoLootBoE_SAVED_VARS.looters["sm"]
+          elseif itemID == 45038 and MLAutoLootBoE_SAVED_VARS.looters["valanyr"] ~= nil then
+            looter = MLAutoLootBoE_SAVED_VARS.looters["valanyr"]
+          end
+          if lootmethod ~= "master" and looter == UnitName("player") then
+            LootSlot(i)
+          elseif looter ~= nil then
+            MasterLootAward(i, looter)
+          end
+        end
       end
     end
   elseif event == "ADDON_LOADED" and arg1 == "MLAutoLootBoE" then

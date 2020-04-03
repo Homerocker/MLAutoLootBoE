@@ -1,6 +1,5 @@
 # MLAutoLootBoE
- Requires: [LibItemID](https://github.com/Homerocker/LibItemID), [LibTableContains](https://github.com/Homerocker/LibTableContains), [LibBindType](https://github.com/Homerocker/LibBindType)
- 
+
  1. Auto-loot BoE.
    - Automatically loots epic BoE items, epic recipes, TOC/Ulduar orbs, primordial saronites, quest items when opening loot.
    - Automatically loots coins.

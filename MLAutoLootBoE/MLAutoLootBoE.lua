@@ -165,10 +165,10 @@ f:SetScript("OnEvent", function(self, event, arg1)
         local link = GetLootSlotLink(i)
         -- checking if link is nil (e.g. when item has been already looted, possible fix for emblems which are always autolooted)
         if link ~= nil then
-          local _, itemLink, itemRarity, itemLevel, _, itemType = GetItemInfo(link)
+          local _, itemLink, itemRarity, _, _, itemType = GetItemInfo(link)
           local bindType = GetBindType(itemLink)
           local itemID = GetItemID(itemLink)
-          local looter = nil
+          local looter
           if itemShouldBeLooted(itemID, itemRarity, itemType, bindType) then
             looter = UnitName("player")
           elseif itemShouldBeDisenchanted(itemID, itemRarity, itemType, bindType) and MLAutoLootBoE_SAVED_VARS.looters["de"] ~= nil then

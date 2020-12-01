@@ -6,7 +6,7 @@ local BOE_IDs = {
 }
 local exceptions = {
   45693,--Mimiron's Head
-  50818,--Invincible's Reins
+  --50818,--Invincible's Reins
   46110,--Alchemist's Cache
   50226,--Festergut's Acidic Blood
   50231,--Rotface's Acidic Blood
